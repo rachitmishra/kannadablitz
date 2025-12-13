@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      // Allow users to read any profile (needed for friends/leaderboards)
+      allow read: if request.auth != null;
+      
+      // Allow authenticated users to write to any profile to enable 
+      // client-side mutual friend addition and nudging. 
+      // In a production app with a backend, this should be restricted 
+      // to only allow users to write to their own profile, with 
+      // friend requests handled via a separate collection or Cloud Functions.
+      allow write: if request.auth != null;
+    }
+  }
+}
